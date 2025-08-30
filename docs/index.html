@@ -1,9 +1,9 @@
-
-    <html><head><meta charset='utf-8'><title>HN Mini</title></head>
-    <body style="font-family: -apple-system, Arial, sans-serif; max-width: 800px; margin: 40px auto;">
-      <h1>Hacker News — Mini Dashboard</h1>
-      <p>Linhas: 30</p>
-      <img src="top_domains.png" alt="Top Domains" style="max-width:100%; height:auto;"/>
-      <h2>Exemplos de títulos</h2>
-      <ul><li>Do the simplest thing that could possibly work</li><li>From Multi-Head to Latent Attention: The Evolution of Attention Mechanisms</li><li>John Carmack's arguments against building a custom XR OS at Meta</li><li>SynthID – A tool to watermark and identify content generated through AI</li><li>Show HN: I made an Animal Crossing style letter editor</li><li>Lisp from Nothing, Second Edition</li><li>Grok Code Fast 1</li><li>Essential Coding Theory [pdf]</li><li>The Theoretical Limitations of Embedding-Based Retrieval</li><li>Deploying DeepSeek on 96 H100 GPUs</li></ul>
-    </body></html>
+html = f"""
+<html><head><meta charset='utf-8'><title>HN Mini</title></head>
+<body style="font-family:-apple-system,Arial,sans-serif;max-width:800px;margin:40px auto;">
+  <h1>Hacker News — Mini Dashboard</h1>
+  <p>Rows: {len(df)}</p>
+  <img src="top_domains.png" alt="Top Domains" style="max-width:100%;height:auto;"/>
+  <h2>Sample titles</h2>
+  <ul>{''.join(f'<li>{t}</li>' for t in titles)}</ul>
+</body></html>"""
