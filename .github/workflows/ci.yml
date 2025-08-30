@@ -3,7 +3,7 @@ name: daily-pipeline
 on:
   schedule:
     - cron: '15 05 * * *'   # 05:15 UTC daily
-  workflow_dispatch: {}      # manual trigger
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      PYTHONPATH: ${{ github.workspace }}  # let pytest import local modules
+      PYTHONPATH: ${{ github.workspace }}   # let pytest import local modules
     steps:
       - uses: actions/checkout@v4
 

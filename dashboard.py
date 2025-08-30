@@ -1,4 +1,4 @@
-# dashboard.py
+# dashboard.py (top of file)
 from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,14 +6,17 @@ import matplotlib.pyplot as plt
 DOCS = Path("docs"); DOCS.mkdir(parents=True, exist_ok=True)
 PROC = Path("data/processed")
 
-def latest_parquet() -> Path:
+def find_parquet() -> Path:
     parts = sorted(PROC.glob("date=*/hn.parquet"))
-    if not parts:
-        raise SystemExit("No processed data found. Run: python storage.py")
-    return parts[-1]
+    if parts:
+        return parts[-1]
+    single = PROC / "hn.parquet"
+    if single.exists():
+        return single
+    raise SystemExit("No processed data found. Run: python storage.py")
 
 def build_dashboard():
-    pf = latest_parquet()
+    pf = find_parquet()
     df = pd.read_parquet(pf, engine="fastparquet")
 
     # last updated timestamp (UTC)
