@@ -17,6 +17,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}  # let pytest import local modules
     steps:
       - uses: actions/checkout@v4
 
@@ -25,14 +27,30 @@ jobs:
           python-version: '3.11'
 
       - run: python -m pip install --upgrade pip
-      - run: pip install pandas requests fastparquet matplotlib
-      - run: pip install pytest
-      - run: pytest -q
-      - run: python ingest.py
-      - run: python transform.py
-      - run: python quality.py
-      - run: python storage.py
-      - run: python dashboard.py
+      - run: pip install pandas requests fastparquet matplotlib pytest
+
+      - name: Run pytest
+        run: pytest -q
+
+      - name: Ingest
+        run: python ingest.py
+      - name: Transform
+        run: python transform.py
+      - name: Quality
+        run: python quality.py
+      - name: Storage
+        run: python storage.py
+
+      - name: Configure matplotlib backend
+        run: |
+          python - <<'PY'
+          import matplotlib
+          matplotlib.use("Agg")
+          print("Matplotlib backend:", matplotlib.get_backend())
+          PY
+
+      - name: Build dashboard
+        run: python dashboard.py
 
       - name: Upload artifact (docs/)
         uses: actions/upload-pages-artifact@v3
