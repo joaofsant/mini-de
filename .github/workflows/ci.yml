@@ -1,15 +1,21 @@
-mkdir -p .github/workflows
-
-cat > .github/workflows/ci.yml <<'YAML'
 name: daily-pipeline
 
 on:
   schedule:
-    - cron: '15 05 * * *'   # runs daily at 05:15 UTC
+    - cron: '15 05 * * *'   # 05:15 UTC daily
   workflow_dispatch: {}      # manual trigger
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
-  run:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,9 +33,17 @@ jobs:
       - run: python storage.py
       - run: python dashboard.py
 
-      - name: Publish dashboard to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact (docs/)
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
-YAML
+          path: ./docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
